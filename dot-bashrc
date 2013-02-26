@@ -34,6 +34,13 @@ case ${TERM} in
         ;;
 esac
 
+# tmux window auto-rename "hostname";
+case "$TERM" in
+    screen*)
+        PROMPT_COMMAND="printf '\033k${HOSTNAME}\033\\';"${PROMPT_COMMAND}
+    ;;
+esac
+
 # Load local bash stuff.
 if [ -f ~/.bash_local ]; then
     . ~/.bash_local
