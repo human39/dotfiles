@@ -2,7 +2,7 @@ LBLUE='\e[36m'
 GREEN='\e[32m'
 RED='\e[31m'
 NOC='\e[0m'
-export PS1="[\[$LBLUE\]\t\[$NOC\]][\[$RED\]\u@\H\[$NOC\]] $ "
+export PS1="[\[$LBLUE\]\t\[$NOC\]][\[$GREEN\]\u@\H\[$NOC\]] $ "
 
 export EDITOR=vim
 export FIGNORE=CVS:\~:.o:.svn:.git
