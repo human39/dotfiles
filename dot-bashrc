@@ -41,6 +41,11 @@ case "$TERM" in
     ;;
 esac
 
+# Import keychains.
+if [[ -x "$(type -P keychain)" ]] ; then
+    eval `keychain --eval --agents ssh id_rsa`
+fi
+
 # Load local bash stuff.
 if [ -f ~/.bash_local ]; then
     . ~/.bash_local
