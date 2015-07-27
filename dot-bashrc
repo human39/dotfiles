@@ -41,9 +41,15 @@ case "$TERM" in
     ;;
 esac
 
-# Import keychains.
+# Import keychains, if any.
 if [[ -x "$(type -P keychain)" ]] ; then
     eval `keychain --eval --agents ssh id_rsa`
+fi
+
+# Ruby Development -- RVM (Ruby Version Manager)
+# http://www.webupd8.org/2014/11/how-to-install-rvm-ruby-version-manager.html
+if [ -f /etc/profile.d/rvm.sh ]; then
+    source /etc/profile.d/rvm.sh
 fi
 
 # Load local bash stuff.
