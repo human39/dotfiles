@@ -1,0 +1,139 @@
+#.bashrc
+
+export LC_ALL=en_IN.UTF-8
+export LANG=en_IN.UTF-8
+
+## Path 
+export PATH=$PATH:/sbin:/bin:/usr/sbin:/usr/local/bin:/usr/games:/usr/local/sbin:/usr/bin:/usr/X11R6/bin:$HOME/bin:/root/bin:/usr/pair/bin
+
+## Aliases
+alias ls='ls -GF'
+
+## env variables
+
+export EDITOR=vim
+export FIGNORE=CVS:\~:.o:.svn:.git
+export HISTIGNORE="cd:ls:exit:history:h"
+
+[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+
+if [ -z "${debian_chroot}" ] && [ -r /etc/debian_chroot ]; then
+    debian_chroot=$(cat /etc/debian_chroot)
+fi
+
+## Colors
+
+BLUE='\[\033[1;34m\]'
+RED='\[\033[1;31m\]'
+GREEN='\[\033[1;32m\]'
+YELLOW='\[\033[1;33m\]'
+RESET='\[\033[0m\]'
+BOLD='\[\033[0;1m\]'
+
+# Check for color prompt
+if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
+    color_prompt=yes
+fi
+
+# functions
+
+function __prompt_command {
+
+    # One day, figure out how to detect dumb terminals and set the
+    # prompt to something not fancy.
+    # Simple Prompt:  export PS1='\u@\h \[\033[1;33m\]\w\[\033[0m\]$(parse_git_branch)$ '
+    
+    __build_advanced_prompt
+    __set_terminal_title
+
+}
+
+PROMPT_COMMAND=__prompt_command
+
+function __build_advanced_prompt {
+
+    local info_color=
+    local prompt_color=    
+    local bold=
+    local reset=
+
+    if [ "$color_prompt" = yes ]; then
+
+        prompt_color="$BLUE"
+        info_color="$GREEN"
+ 
+        bold="$BOLD"
+        reset="$RESET"
+
+        if [ "$EUID" -eq 0 ]; then # Change prompt colors for root user
+            prompt_color="$BLUE"
+            info_color="$RED"
+        fi
+    fi 
+
+    # git addon
+    local git_prompt=$(__parse_git_branch)
+
+    # Build Prompt
+    PS1=$prompt_color
+    PS1+='┌──('
+    PS1+=$info_color
+    PS1+='\u@\h'
+    PS1+=$prompt_color
+    PS1+=')-['
+    PS1+=$bold
+    PS1+='\w'
+    PS1+=$prompt_color
+    PS1+=']' 
+    if [[ ! -z "$git_prompt" ]]; then 
+        PS1+='-['
+        PS1+=$bold
+        PS1+=$git_prompt
+        PS1+=$prompt_color
+        PS1+=']' 
+    fi
+    PS1+='\n'  ## New Line
+    PS1+=$prompt_color
+    PS1+='└─'
+    PS1+=$info_color
+    PS1+='$(__prompt_char)'
+    PS1+=$reset
+    PS1+=' '
+}
+
+function __set_terminal_title {
+    case ${TERM} in
+            xterm*|rxvt*|Eterm|aterm|kterm|gnome*|interix)
+               echo -ne "\033]0;${USER}@${HOSTNAME%%.*}:${PWD/$HOME/~}\007"
+            ;;
+            screen)
+               echo -ne "\033k${USER}@${HOSTNAME}\033\\"
+               
+               # make vim's backspace work in screen
+               stty erase ^?
+            ;;
+    esac
+}
+
+function __parse_git_dirty {
+   if [[ $(git status --porcelain 2> /dev/null) ]]; then
+      echo "*"; 
+   fi
+}
+
+function __parse_git_branch {
+  git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e "s/* \(.*\)/\1$(__parse_git_dirty)/"
+}
+
+function __prompt_char {
+    if [ "$EUID" -eq 0 ]; then 
+        echo "\#"
+    else 
+        echo "\$"
+    fi
+}
+
+# Load local bash stuff.
+if [ -f ~/.bashrc_local ]; then
+    . ~/.bashrc_local
+fi
