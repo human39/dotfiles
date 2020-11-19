@@ -4,7 +4,7 @@ export LC_ALL=en_IN.UTF-8
 export LANG=en_IN.UTF-8
 
 ## Path 
-export PATH=$PATH:/sbin:/bin:/usr/sbin:/usr/local/bin:/usr/games:/usr/local/sbin:/usr/bin:/usr/X11R6/bin:$HOME/bin:/root/bin:/usr/pair/bin
+export PATH=$PATH:/sbin:/bin:/usr/sbin:/usr/local/bin:/usr/games:/usr/local/sbin:/usr/bin:/usr/X11R6/bin:$HOME/bin:/root/bin
 
 ## Aliases
 alias ls='ls -GF'
